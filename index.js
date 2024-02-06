@@ -3,7 +3,8 @@ const path = require('node:path');
 const {Client, Events, GatewayIntentBits, Collection} = require('discord.js');
 
 //I know that this ain't the right way to do it Byte. We ball.
-const token = "MTE5MDk2NjA3MzU3MTQyNjM3NA.Gfpuz8.tiQEkrW9rLV8VPQY6wdgvTbmvuZaDuqkQguT7s";
+//OK nvm we don't ball Discord resets the token anytime we try to ball. We do this right.
+const { token } = require('./config.json');
 
 //Create client instance
 const client = new Client({intents: [GatewayIntentBits.Guilds]});
