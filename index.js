@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const {Client, Events, GatewayIntentBits, Collection} = require('discord.js');
 
 //I know that this ain't the right way to do it Byte. We ball.
@@ -12,10 +13,39 @@ const client = new Client({intents: [GatewayIntentBits.Guilds]});
 
 client.commands = new Collection();
 
+//Build MongoDB URI
+const { mongoPassword } = require('./config.json')
+const uri = `mongodb+srv://bytezadusto:${mongoPassword}@clusterpasta.ketfdz1.mongodb.net/?retryWrites=true&w=majority`;
+
 //Console log to check if Pasta's still alive
 client.once(Events.ClientReady, readyClient => {
     console.log(`We up ${readyClient.user.tag}`);
 });
+
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const mongoClient = new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+  
+  async function run() {
+    try {
+      // Connect the client to the server    (optional starting in v4.7)
+      await mongoClient.connect();
+      // Send a ping to confirm a successful connection
+      await mongoClient.db("admin").command({ ping: 1 });
+      console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+      // Ensures that the client will close when you finish/error
+      await mongoClient.close();
+    }
+  }
+  run().catch(console.dir);
+
 
 //Setting up the bot to read the path and all of the commands
 const foldersPath = path.join(__dirname, 'commands');
